@@ -1,31 +1,41 @@
 import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
 
-const blog = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/blog" }),
-  schema: ({ image }) =>
+const products = defineCollection({
+  schema: ({}) =>
     z.object({
       title: z.string(),
-      description: z.string(),
-      publicationDate: z.date(),
-      image: image().optional(),
-      imageAlt: z.string().optional(),
-      tags: z.array(z.string()).optional(),
+      imageSrc: z.string(),
+      badgeText: z.string().optional(),
+      mediaFeature: z
+        .object({
+          text: z.string(),
+          logoSrc: z.string(),
+        })
+        .optional(),
+      features: z.array(z.string()).optional(),
+      ctaText: z.string().optional().default("SHOP NOW"),
+      ctaLink: z.string().optional().default("#"),
+      ratings: z
+        .object({
+          stars: z.number(),
+          source: z.string().optional(),
+          additional: z
+            .array(
+              z.object({
+                label: z.string(),
+                value: z.string(),
+              }),
+            )
+            .optional(),
+        })
+        .optional(),
+      reviewLink: z
+        .object({
+          text: z.string(),
+          url: z.string(),
+        })
+        .optional(),
     }),
 });
 
-const projects = defineCollection({
-  loader: glob({
-    pattern: "**/[^_]*.{md,mdx}",
-    base: "./src/content/projects",
-  }),
-  schema: () =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      publicationDate: z.date().optional(),
-      href: z.string(),
-    }),
-});
-
-export const collections = { blog, projects };
+export const collections = { products };

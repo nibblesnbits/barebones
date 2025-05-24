@@ -1,0 +1,106 @@
+---
+export interface Props {
+  product: any;
+}
+
+const { product } = Astro.props;
+const { Content } = await product.render();
+
+const {
+  title,
+  imageSrc,
+  badgeText,
+  mediaFeature,
+  features = [],
+  ctaText = "SHOP NOW",
+  ctaLink = "#",
+  ratings,
+  reviewLink,
+} = product.data;
+---
+
+<div class="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-lg">
+  <div class="w-full">
+    <img
+      src={imageSrc || "/placeholder.svg"}
+      alt={title}
+      class="h-64 w-full object-cover"
+    />
+  </div>
+
+  <div class="p-6">
+    {
+      badgeText && (
+        <div class="mb-2 flex items-center font-semibold text-indigo-700">
+          <span class="mr-2">★</span>
+          <span>{badgeText}</span>
+        </div>
+      )
+    }
+    <h2 class="mb-4 text-2xl font-bold text-indigo-900">{title}</h2>
+
+    <div class="prose mb-4 text-indigo-800">
+      <Content />
+    </div>
+
+    {
+      mediaFeature && (
+        <div class="mb-4 flex items-center">
+          <p class="mr-2 font-semibold">{mediaFeature.text}</p>
+          <img
+            src={mediaFeature.logoSrc || "/placeholder.svg"}
+            alt="Media logo"
+            class="h-8 w-auto"
+          />
+        </div>
+      )
+    }
+
+    <a
+      href={ctaLink}
+      class="inline-block rounded bg-orange-500 px-4 py-2 font-bold text-white transition hover:bg-orange-600"
+    >
+      {ctaText}
+    </a>
+
+    <ul class="mt-4 space-y-2">
+      {
+        features.map((feature) => (
+          <li class="flex items-center text-indigo-700">
+            <span class="mr-2">☁️</span>
+            <span>{feature}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      ratings && (
+        <div class="mt-6 flex items-center space-x-4">
+          <span class="font-semibold text-indigo-800">{ratings.source}</span>
+          <div class="flex items-center">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                class={`text-xl ${i < ratings.stars ? "text-yellow-400" : "text-gray-300"}`}
+              >
+                ★
+              </span>
+            ))}
+            <span class="ml-2 font-semibold">{ratings.stars.toFixed(1)}</span>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      reviewLink && (
+        <a
+          href={reviewLink.url}
+          class="mt-4 block font-bold text-orange-500 hover:underline"
+        >
+          {reviewLink.text}
+        </a>
+      )
+    }
+  </div>
+</div>

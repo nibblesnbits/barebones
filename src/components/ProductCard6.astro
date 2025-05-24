@@ -1,0 +1,126 @@
+---
+export interface Props {
+  product: any;
+}
+const { product } = Astro.props;
+const { Content } = await product.render();
+const {
+  title,
+  imageSrc,
+  badgeText,
+  mediaFeature,
+  features = [],
+  ctaText = "SHOP NOW",
+  ctaLink = "#",
+  ratings,
+  reviewLink,
+} = product.data;
+---
+
+<div class="mx-auto max-w-5xl overflow-hidden rounded-2xl bg-white shadow-lg">
+  <div class="flex flex-col md:flex-row">
+    <!-- Content Left -->
+    <div class="flex-1 p-8">
+      <div class="flex h-full flex-col justify-between">
+        <div>
+          {
+            badgeText && (
+              <div class="mb-4 flex items-center font-semibold text-indigo-700">
+                <span class="mr-2">★</span>
+                <span>{badgeText}</span>
+              </div>
+            )
+          }
+
+          <h2 class="mb-4 text-3xl font-bold text-indigo-900">{title}</h2>
+          <div class="prose mb-6 text-indigo-800">
+            <Content />
+          </div>
+
+          {
+            features.length > 0 && (
+              <ul class="mb-6 space-y-3">
+                {features.map((feature) => (
+                  <li class="flex items-center text-indigo-700">
+                    <span class="mr-3 text-lg">☁️</span>
+                    <span class="font-medium">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+
+          {
+            mediaFeature && (
+              <div class="mb-6 flex items-center rounded-lg bg-indigo-50 p-4">
+                <p class="mr-4 flex-1 font-semibold text-indigo-800">
+                  {mediaFeature.text}
+                </p>
+                <img
+                  src={mediaFeature.logoSrc || "/placeholder.svg"}
+                  alt="Media logo"
+                  class="h-8 w-auto"
+                />
+              </div>
+            )
+          }
+        </div>
+
+        <div class="space-y-4">
+          <a
+            href={ctaLink}
+            class="inline-block rounded-lg bg-orange-500 px-8 py-3 font-bold text-white transition hover:bg-orange-600"
+          >
+            {ctaText}
+          </a>
+
+          <div
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+          >
+            {
+              ratings && (
+                <div class="flex items-center space-x-3">
+                  <span class="font-semibold text-indigo-800">
+                    {ratings.source}
+                  </span>
+                  <div class="flex items-center">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        class={`text-xl ${i < ratings.stars ? "text-yellow-400" : "text-gray-300"}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                    <span class="ml-2 font-semibold text-indigo-800">
+                      {ratings.stars.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+              )
+            }
+
+            {
+              reviewLink && (
+                <a
+                  href={reviewLink.url}
+                  class="font-bold text-orange-500 hover:underline"
+                >
+                  {reviewLink.text}
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Right -->
+    <div class="relative md:w-2/5">
+      <img
+        src={imageSrc || "/placeholder.svg"}
+        alt={title}
+        class="h-64 w-full object-cover md:h-full"
+      />
+    </div>
+  </div>
+</div>
